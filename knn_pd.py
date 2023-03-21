@@ -1,9 +1,11 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from scipy.stats import mode
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
 
 
 def euclidean(p1,p2):
@@ -11,6 +13,22 @@ def euclidean(p1,p2):
     dist = np.sqrt(np.sum((p1-p2)**2))
     return dist
 
+#Helper function for getting the most common element
+
+def most_common(num):
+  count = {}
+
+  for a in num:
+    if a in count:
+      count[a]+=1
+    else:
+      count[a]=1
+
+  max_value = max(count , key=count.get)
+
+  return max_value
+
+  
 
 
 class MLChoice:
@@ -37,15 +55,25 @@ class MLChoice:
   def get_accuracy(self):
 
    #Based on y_pred and y_predict find the accruacy
-    print(accuracy_score(self.y_pred , self.y_test))
+    print("Accuracy of Training(Scratch): ", accuracy_score(self.y_pred , self.y_test))
 
-    # use a skleanr model. 
-    clf = KNeighborsClassifier(n_neighbors=self.k)
-    clf.fit(self.X_train , self.y_train)
+    # use a skleanr model.
+    # 
+    if self.ML == "KNN":
+     
+        clf = KNeighborsClassifier(n_neighbors=self.k)
+        clf.fit(self.X_train , self.y_train)
 
-    clf_y_pred = clf.predict(self.X_test)
+        clf_y_pred = clf.predict(self.X_test)
 
-    print("Accuracy of model: " , clf.score(self.X_test, self.y_test))
+        print("Accuracy of model: " , accuracy_score(clf_y_pred, self.y_test))
+    else:
+      svm = SVC(kernel='linear')
+      svm.fit(self.X_train , self.y_train)
+      svm_y_pred = svm.predict(self.X_test)
+      print("Accuracy of model: " , accuracy_score(svm_y_pred, self.y_test))
+
+      
 
 
 
@@ -62,9 +90,13 @@ class MLChoice:
     # print(self.X_train)
     # print(self.X_test)
     
+  def predict(self):
+    if self.ML=="KNN":
+      self.knn_predict()
+    else:
+      return
 
-
-  def predict( self ):
+  def knn_predict( self ):
     
     # Returns the values of the y values.
     y_lables=[]
@@ -98,14 +130,19 @@ class MLChoice:
 
       
       labels = self.y_train[point_dist]
+     
     #   print("Lables sorted by the distance")
     #   print(labels)
 
       #You get all the labels. 
 
-      frequent = mode(labels)
-      frequent = frequent.mode[0]
-      y_lables.append(frequent)
+      #Get the most frequent lable
+
+
+    #   frequent = mode(labels)
+    #   frequent = frequent.mode[0]
+    #   y_lables.append(statistics.mode(labels))
+      y_lables.append(most_common(labels))
 
 
       
