@@ -1,3 +1,4 @@
-Dataset: data_banknote_authentication.txtModel used: SVM
-Accuracy of model:  0.0
-Accuracy of model:  0.9854368932038835
+Dataset: sonar.txt
+Model used: KNN
+Accuracy of Training(Scratch):  0.5783132530120482
+Accuracy of model:  0.5783132530120482

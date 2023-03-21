@@ -35,12 +35,14 @@ dataset = str(sys.argv[2])
 class MLChoice:
 
   def __init__(self, learning_rate=0.001 , lambda_parameter = 0.01 , iter=1000 ):
-    self.k=3
+    self.k=11
 
     
     self.ML = ml_algo
     # self.dataset = "data_banknote_authentication.txt"
     self.dataset= dataset
+    self.X=None
+    self.y=None
     self.X_train= None
     self.y_train = None
     self.X_test = None
@@ -64,7 +66,7 @@ class MLChoice:
 
     with open('output.txt' , 'w') as file:
       file.write(("Dataset: " +  self.dataset))
-      file.write(("Model used: " + self.ML))
+      file.write(("\nModel used: " + self.ML))
 
 
     
@@ -77,7 +79,10 @@ class MLChoice:
 
             print("\nAccuracy of Training(Scratch): ", accuracy_score(self.y_pred , self.y_test) , file=file)
 
-        
+            # maybe a differetn train , test , split?
+            
+            #Train , test , split
+            self.X_train ,  self.X_test , self.y_train , self.y_test = train_test_split(self.X,self.y,test_size=0.4 , random_state=42)
             clf = KNeighborsClassifier(n_neighbors=self.k)
             clf.fit(self.X_train , self.y_train)
 
@@ -88,6 +93,7 @@ class MLChoice:
       
       #Get the slef_pred values
       self.y_pred = self.svm_predict()
+      print(self.y_pred)
       
       with open('output.txt' , 'a') as file:
 
@@ -114,10 +120,10 @@ class MLChoice:
     data.iloc[:,-1] = data.iloc[:,-1].replace({unique_values[0]:0 , unique_values[1]:1})
       
 
-    X=data.iloc[:,:-1].values
-    y=data.iloc[:,-1].values
+    self.X=data.iloc[:,:-1].values
+    self.y=data.iloc[:,-1].values
     #Train , test , split
-    self.X_train ,  self.X_test , self.y_train , self.y_test = train_test_split(X,y,test_size=0.3 , random_state=42)
+    self.X_train ,  self.X_test , self.y_train , self.y_test = train_test_split(self.X,self.y,test_size=0.4 , random_state=42)
     
     # print("Succesfully loaded the dataset")
     # print(self.X_train)
@@ -203,6 +209,7 @@ class MLChoice:
 
     # At this point , we have values for w, b and we can perform prediction
     print("I fit the data")
+    print(self.w)
       
 
 
